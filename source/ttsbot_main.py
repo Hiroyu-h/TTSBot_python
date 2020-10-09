@@ -1,7 +1,7 @@
 import asyncio
 import configparser
-import os
 import errno
+import os
 import pathlib
 import re
 import subprocess
@@ -22,35 +22,38 @@ from voice_generator import create_WAV
 # ｗｗをダブリュダブリュって呼んでしまう
 # メンション読ませると壊れたみたいに読み上げる ⇒ ◆対応済
 # ロールメンションの読み
+# config.ini から値を読み取って起動させる ⇒　◆対応済
 # ----------------------------------------- #
 global version
 global voice_num
 global voice_speed
-version = '1.1'
-voice_num = '0'
-voice_speed = '1.0'
 
 # このファイルがあるディレクトリ
 cwdp = os.path.dirname(os.path.abspath(__file__))
 
 # --------------------------------------------------
 # iniファイルの読み込み
-config = configparser.ConfigParser()
+config_ini = configparser.ConfigParser()
 config_path = f'{cwdp}\\config.ini'
 
-# 指定したiniファイルが存在しない場合、エラー発生
-if not os.path.exists(config_path):
+if os.path.exists(config_path):
+    # iniファイルを開く
+    with open(config_path, encoding='utf-8') as cfp:
+        config_ini.read_file(cfp)
+        # デフォルト値取得
+        read_bot = config_ini['DEFAULT']
+        bot_name = read_bot.get('BOT')
+        
+        # 稼働するBOTの値取得
+        read_config = config_ini[bot_name]
+        bot_token = read_config.get('BOT_TOKEN')
+        version = read_config.get('Version')
+        voice_num = read_config.get('Voice')
+        voice_speed = read_config.get('Speed')
+                       
+else:
+    # 指定したiniファイルが存在しない場合、エラー発生
     raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), config_path)
-
-config.read('config_path', encoding='utf-8')
-read_default = config['DEFAULT']
-bot_token = read_default.get('BOT_TOKEN')
-
-var1 = read_default.get('Voice')
-print('var1:',var1)
-print('config_path:', config_path)
-print('BOT_TOKEN:', bot_token)
-
 
 
 hanasu = commands.Bot(command_prefix='&')
@@ -240,7 +243,4 @@ async def on_message(message):
                 pass
     await hanasu.process_commands(message)
 
-hanasu.run('NzYxNzc2OTI4MDU4NzY5NDQ4.X3fiDA.FraNHwdRc1Yaww4C8pmMHgU1Ips')
-
-# NzYyOTYxNTcxNjUwODYzMTA0.X3wxVQ.8XFSlbp_OkXvHTr_gy9a8fGD7DI -sazanami
-#bot.run('NzYxNzc2OTI4MDU4NzY5NDQ4.X3fiDA.DHgJ7qAV1sE4k7d1xogI9Cf-3WY') # Botのトークン
+hanasu.run(bot_token)
