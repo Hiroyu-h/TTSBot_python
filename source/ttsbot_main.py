@@ -29,14 +29,16 @@ version = '1.1'
 voice_num = '0'
 voice_speed = '1.0'
 
+# カレントディレクトリ
+cwdp = pathlib.Path.cwd()
+
 config = configparser.ConfigParser()
-config.read('src/config.ini')
+config.read('{cwdp}/config.ini')
 
 hanasu = commands.Bot(command_prefix='&')
 hanasu.remove_command('help')
 
-# カレントディレクトリ
-cwdp = pathlib.Path.cwd()
+
 
 # async def send2devloper(text):
 #     developer = hanasu.get_user(config.getint('BOT', 'developer'))
