@@ -20,6 +20,9 @@ def reaction_rp(text):
     text = re.sub(r':[0-9]*>', '', text)
     return text
 
+def rep_w(text):
+    
+    return text
 
 # creat_WAV
 # message.contentをテキストファイルに書き込み

@@ -21,6 +21,7 @@ from voice_generator import create_WAV
 # チャット同時だと読み上げない ⇒ ◆対応済
 # ｗｗをダブリュダブリュって呼んでしまう
 # メンション読ませると壊れたみたいに読み上げる ⇒ ◆対応済
+# メンションでニックネームを呼ばせる　⇒　◆対応済
 # ロールメンションの読み ⇒　◆対応済
 # config.ini から値を読み取って起動させる ⇒　◆対応済
 # ----------------------------------------- #
@@ -203,15 +204,20 @@ async def on_message(message):
                 for ment in mn_list:
                     fetchmember = await message.guild.fetch_member(ment)
                     print(fetchmember)
-                    print(fetchmember.name)
-                    
+                    # print(fetchmember.name)
+                    # print(fetchmember.nick)
                     ptrn = '^<@!'
                     # print('re:',re.match(ptrn,message.content))
                     
-                    if re.match(ptrn,message.content):
-                        mn_dict['<@!{}>'.format(str(ment))] = fetchmember.name
+                    if fetchmember.nick:
+                        fetch_name = fetchmember.nick
                     else:
-                        mn_dict['<@{}>'.format(str(ment))] = fetchmember.name
+                        fetch_name = fetchmember.name
+                    
+                    if re.match(ptrn,message.content):
+                        mn_dict['<@!{}>'.format(str(ment))] = fetch_name
+                    else:
+                        mn_dict['<@{}>'.format(str(ment))] = fetch_name
                                            
                 # channel_mentionの、チャンネル名への置換
                 for cnls in ch_list:
