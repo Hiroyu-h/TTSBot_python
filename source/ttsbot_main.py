@@ -1,6 +1,7 @@
 import asyncio
 import configparser
 import os
+import errno
 import pathlib
 import re
 import subprocess
@@ -29,11 +30,28 @@ version = '1.1'
 voice_num = '0'
 voice_speed = '1.0'
 
-# カレントディレクトリ
-cwdp = pathlib.Path.cwd()
+# このファイルがあるディレクトリ
+cwdp = os.path.dirname(os.path.abspath(__file__))
 
+# --------------------------------------------------
+# iniファイルの読み込み
 config = configparser.ConfigParser()
-config.read('{cwdp}/config.ini')
+config_path = f'{cwdp}\\config.ini'
+
+# 指定したiniファイルが存在しない場合、エラー発生
+if not os.path.exists(config_path):
+    raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), config_path)
+
+config.read('config_path', encoding='utf-8')
+read_default = config['DEFAULT']
+bot_token = read_default.get('BOT_TOKEN')
+
+var1 = read_default.get('Voice')
+print('var1:',var1)
+print('config_path:', config_path)
+print('BOT_TOKEN:', bot_token)
+
+
 
 hanasu = commands.Bot(command_prefix='&')
 hanasu.remove_command('help')
