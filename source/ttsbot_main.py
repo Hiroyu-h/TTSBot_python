@@ -196,22 +196,22 @@ async def on_message(message):
                 # IDに対応する名前の辞書を作成
                 mn_dict = {}
                 ch_dict = {}
-                
+                                
                 # mentionの、ユーザネームへの置換
                 for ment in mn_list:
                     fetchmember = await message.guild.fetch_member(ment)
                     print(fetchmember)
                     print(fetchmember.name)
-                    # print(message.guild.get_member(ment))
-                    # print(message.guild.get_member(ment).name)
-                    # 自身へのメンションかどうかで、Keyを変える
-                    if ment == message.author.id:
+                    
+                    ptrn = '^<@!'
+                    # print('re:',re.match(ptrn,message.content))
+                    
+                    if re.match(ptrn,message.content):
                         mn_dict['<@!{}>'.format(str(ment))] = fetchmember.name
-                        print('True :@!')
                     else:
                         mn_dict['<@{}>'.format(str(ment))] = fetchmember.name
-                        print('False :@')
-                        # channel_mentionの、チャンネル名への置換
+                                           
+                # channel_mentionの、チャンネル名への置換
                 for cnls in ch_list:
                     ch_dict['<#{}>'.format(str(cnls))] = message.guild.get_channel(cnls).name
                 # 変換テーブルの作成
