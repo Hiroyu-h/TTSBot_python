@@ -21,7 +21,7 @@ from voice_generator import create_WAV
 # チャット同時だと読み上げない ⇒ ◆対応済
 # ｗｗをダブリュダブリュって呼んでしまう
 # メンション読ませると壊れたみたいに読み上げる ⇒ ◆対応済
-# ロールメンションの読み
+# ロールメンションの読み ⇒　◆対応済
 # config.ini から値を読み取って起動させる ⇒　◆対応済
 # ----------------------------------------- #
 global version
@@ -192,10 +192,12 @@ async def on_message(message):
                 # mention と channel_mentionを名前へ置換
                 mn_list = message.raw_mentions
                 ch_list = message.raw_channel_mentions
+                rl_list = message.raw_role_mentions
                 print('mn_list:',message.raw_mentions)
                 # IDに対応する名前の辞書を作成
                 mn_dict = {}
                 ch_dict = {}
+                rl_dict = {}
                                 
                 # mentionの、ユーザネームへの置換
                 for ment in mn_list:
@@ -214,12 +216,18 @@ async def on_message(message):
                 # channel_mentionの、チャンネル名への置換
                 for cnls in ch_list:
                     ch_dict['<#{}>'.format(str(cnls))] = message.guild.get_channel(cnls).name
+                
+                for roles in rl_list:
+                    rl_dict['<@&{}>'.format(str(roles))] = message.guild.get_role(roles).name
+                    
                 # 変換テーブルの作成
                 for me_key in mn_dict.keys():
                     message.content = message.content.replace(me_key, mn_dict[me_key], 1)
                 for ch_key in ch_dict.keys():
                     message.content = message.content.replace(ch_key, ch_dict[ch_key], 1)
-
+                for rl_key in rl_dict.keys():
+                    message.content = message.content.replace(rl_key, rl_dict[rl_key], 1)
+                
                 # 音声ファイルの場所
                 voice_file = 'C:\\open_jtalk\\output.wav'
                 
