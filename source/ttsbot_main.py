@@ -222,7 +222,7 @@ async def on_message(message):
                 # channel_mentionの、チャンネル名への置換
                 for cnls in ch_list:
                     ch_dict['<#{}>'.format(str(cnls))] = message.guild.get_channel(cnls).name
-                
+                # ロールmentionの、ロール名への置換
                 for roles in rl_list:
                     rl_dict['<@&{}>'.format(str(roles))] = message.guild.get_role(roles).name
                     
