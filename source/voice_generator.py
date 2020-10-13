@@ -21,8 +21,13 @@ def reaction_rp(text):
     return text
 
 def rep_w(text):
+    pattern = r'[ｗＷ]+$'   # 文末のｗ,Ｗを「わら」にリプレイス
     
-    return text
+    return re.sub(pattern, ' わら', text)
+
+def rep_g(text):
+    pattern = r'[α-ω|Α-Ω]+' # ギリシャ文字を読ませない
+    return re.sub(pattern, '', text)
 
 # creat_WAV
 # message.contentをテキストファイルに書き込み
@@ -38,14 +43,17 @@ def create_WAV(inputText, voice_num, voice_speed):
     inputText = urlAbb(inputText)
     inputText = reaction_rp(inputText)
     inputText = inputText.replace('<', '').replace('>', '')
-
-       
+    inputText = rep_w(inputText)
+    inputText = rep_g(inputText)
+    
     # inputText = unicodeText.encode('shift_jis')
     
     input_file = 'C:\\open_jtalk\\input.txt'
 
-    with open(input_file,'w',encoding='shift_jis') as file:
+    with open(input_file,'w',encoding='shift_jis',errors='ignore') as file:
         file.write(inputText)
+    
+    file.close()
     
     # dicのpath
     x = 'C:\\open_jtalk\\dic'
